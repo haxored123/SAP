@@ -9,7 +9,7 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("Sales Extractor")> 
-<Assembly: AssemblyDescription("")> 
+<Assembly: AssemblyDescription("PTU for SAP Upload")> 
 <Assembly: AssemblyCompany("Perfecto Group of Companies")> 
 <Assembly: AssemblyProduct("Extractor")> 
 <Assembly: AssemblyCopyright("Copyright ©  2015")> 

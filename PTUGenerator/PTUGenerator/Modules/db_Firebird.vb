@@ -3,7 +3,7 @@
 Module db_Firebird
     Public con As OdbcConnection
 
-    Friend dbName As String = "Database.FDB"
+    Friend dbName As String = "D:\CaDeAtH\Documents\RAW\PTU Gen\RobGensan_PHOTO.FDB"
     Friend fbUser As String = "SYSDBA"
     Friend fbPass As String = "masterkey"
     Friend fbDataSet As New DataSet
@@ -29,7 +29,7 @@ Module db_Firebird
         con.Close()
     End Sub
 
-    Public Function getTables(ByVal tblName As String) As List(Of String)
+    Public Function getColumns(ByVal tblName As String) As List(Of String)
         Try
             Dim restrictions As String() = New String() {Nothing, Nothing, tblName, Nothing}
 
@@ -45,17 +45,31 @@ Module db_Firebird
             Return tmpStr
         Catch ex As Exception
             dbClose()
-            MsgBox("Error in retrieving tables", MsgBoxStyle.Critical)
+            MsgBox("Error in retrieving table columns", MsgBoxStyle.Critical)
             Return Nothing
         End Try
     End Function
 
-    Public Function getSQL(ByVal mySql As String) As DataSet
-        dbOpen()
+    Public Function LoadSQL(ByVal mySql As String) As DataSet
+        Try
+            dbOpen()
+            Dim da As OdbcDataAdapter
+            Dim fillData As String = "CustomSQL"
+            Dim ds As New DataSet
 
+            ds.Clear()
+            da = New OdbcDataAdapter(mySql, con)
+            da.Fill(ds, fillData)
 
+            dbClose()
 
-        dbClose()
+            Return ds
+        Catch ex As Exception
+            Console.WriteLine("SQL: " & mySql & "| ERR: " & ex.Message)
+            MsgBox("Cannot do some queries", MsgBoxStyle.Critical, "Load SQL")
+            dbClose()
+            Return Nothing
+        End Try
     End Function
 
 #Region "SPECIALIZED FUNCTIONS"
