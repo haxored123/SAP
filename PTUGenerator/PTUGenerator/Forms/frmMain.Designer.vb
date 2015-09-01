@@ -32,9 +32,10 @@ Partial Class frmMain
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtBranch = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.pbIT = New System.Windows.Forms.PictureBox()
+        Me.wbAds = New System.Windows.Forms.WebBrowser()
         Me.GroupBox1.SuspendLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.pbIT, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'dtpExtract
@@ -116,25 +117,34 @@ Partial Class frmMain
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Branch :"
         '
-        'PictureBox1
+        'pbIT
         '
-        Me.PictureBox1.Image = Global.PTUGenerator.My.Resources.Resources.itd_728x90
-        Me.PictureBox1.Location = New System.Drawing.Point(12, 80)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(735, 98)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
-        Me.PictureBox1.TabIndex = 3
-        Me.PictureBox1.TabStop = False
+        Me.pbIT.Image = Global.PTUGenerator.My.Resources.Resources.itd_728x90
+        Me.pbIT.Location = New System.Drawing.Point(12, 80)
+        Me.pbIT.Name = "pbIT"
+        Me.pbIT.Size = New System.Drawing.Size(735, 98)
+        Me.pbIT.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
+        Me.pbIT.TabIndex = 3
+        Me.pbIT.TabStop = False
+        '
+        'wbAds
+        '
+        Me.wbAds.Location = New System.Drawing.Point(12, 80)
+        Me.wbAds.MinimumSize = New System.Drawing.Size(20, 20)
+        Me.wbAds.Name = "wbAds"
+        Me.wbAds.Size = New System.Drawing.Size(735, 98)
+        Me.wbAds.TabIndex = 4
         '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(757, 188)
-        Me.Controls.Add(Me.PictureBox1)
+        Me.ClientSize = New System.Drawing.Size(757, 187)
+        Me.Controls.Add(Me.pbIT)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.btnGen)
         Me.Controls.Add(Me.dtpExtract)
+        Me.Controls.Add(Me.wbAds)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
@@ -142,7 +152,7 @@ Partial Class frmMain
         Me.Text = "Extractor"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.pbIT, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -155,6 +165,7 @@ Partial Class frmMain
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents txtCustomer As System.Windows.Forms.TextBox
     Friend WithEvents Label3 As System.Windows.Forms.Label
-    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
+    Friend WithEvents pbIT As System.Windows.Forms.PictureBox
+    Friend WithEvents wbAds As System.Windows.Forms.WebBrowser
 
 End Class

@@ -43,6 +43,9 @@
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         On Error Resume Next 'Uncomment on Final
 
+        advertising.InitializedAds()
+        wbAds.Navigate(DisplayAds)
+
         If Not System.IO.File.Exists(configFile) Then
             System.IO.File.Create(configFile).Dispose()
 
@@ -73,5 +76,9 @@
         txtArea.ReadOnly = True
         txtBranch.ReadOnly = True
         txtCustomer.ReadOnly = True
+    End Sub
+
+    Private Sub wbAds_DocumentCompleted(ByVal sender As System.Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles wbAds.DocumentCompleted
+        pbIT.Visible = True
     End Sub
 End Class

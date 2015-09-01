@@ -85,6 +85,7 @@
       <DependentUpon>frmMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Modules\advertising.vb" />
     <Compile Include="Modules\db_Firebird.vb" />
     <Compile Include="Modules\IniFileVb.vb" />
     <Compile Include="Modules\mod_extract.vb" />

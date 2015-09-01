@@ -49,6 +49,7 @@ Module mod_extract
                 oSheet.Cells(cnt + 2, 10) = "OPE"
                 oSheet.Cells(cnt + 2, 13) = "OVAT-N"
             End With
+            Application.DoEvents() 'No Hang
         Next
 
         'Sheet 3
@@ -56,10 +57,16 @@ Module mod_extract
         For cnt = 0 To dsSerial.Tables(0).Rows.Count - 1
             oSheet.Cells(cnt + 2, 1) = 1
             With dsSerial.Tables(0).Rows(cnt)
+                Dim tmpStr As String = .Item("IntrSerial")
+
+                If .Item("IntrSerial").ToString.Length > 0 Then Console.WriteLine("Serial Found")
+                If IsNumeric(.Item("IntrSerial")) Then
+                    tmpStr = "'" & .Item("IntrSerial")
+                End If
                 oSheet.Cells(cnt + 2, 2) = .Item("ItemCode")
                 oSheet.Cells(cnt + 2, 3) = .Item("Quantity")
                 oSheet.Cells(cnt + 2, 4) = BranchCode
-                oSheet.Cells(cnt + 2, 5) = .Item("IntrSerial")
+                oSheet.Cells(cnt + 2, 5) = tmpStr
             End With
         Next
 
