@@ -164,7 +164,9 @@
     <None Include="Resources\itd-728x90.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ads.html" />
+    <Content Include="ads.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Custom-Icon-Design-Pretty-Office-7-Extract-todays-changes.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

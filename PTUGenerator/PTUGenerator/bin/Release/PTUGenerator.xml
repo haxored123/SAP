@@ -6,7 +6,7 @@ PTUGenerator
 </name>
 </assembly>
 <members>
-<member name="M:PTUGenerator.mod_extract.GeneratePTUFile(System.Data.DataSet,System.Data.DataSet)">
+<member name="M:PTUGenerator.mod_extract.GeneratePTUFile(System.Data.DataSet,System.Data.DataSet,System.Data.DataSet)">
 	<summary>
  Extract OR SALES FILES from POS
  </summary>

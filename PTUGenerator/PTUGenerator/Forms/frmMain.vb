@@ -4,40 +4,68 @@
     Private iniFile As New IniFile
 
     Private Sub btnGen_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnGen.Click
-        Dim objSales As New DataSet
-        Dim objSerial As New DataSet
-        mod_extract.TransDate = dtpExtract.Value.ToString("M/d/yyyy")
-        If devMode Then mod_extract.TransDate = "6/3/2015"
+        Try
+            btnGen.Enabled = False
 
-        Dim mySql As String
-        mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
-        mySql &= vbCrLf & "FROM POSENTRY ENT "
-        mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
-        mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
-        mySql &= vbCrLf & "WHERE "
-        mySql &= vbCrLf & "ITM.ITEMNO <> 'CASHD' AND ITM.ITEMNO <> 'CASHO' AND"
-        mySql &= vbCrLf & String.Format("ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
-        mySql &= vbCrLf & "ORDER BY ITM.ITEMNO ASC"
+            Dim objSales As New DataSet
+            Dim objSerial As New DataSet
+            Dim tmpCC As New DataSet
+            Dim objCC As New DataSet
+            mod_extract.TransDate = dtpExtract.Value.ToString("M/d/yyyy")
+            If devMode Then mod_extract.TransDate = "6/3/2015"
 
-        Console.WriteLine("SQL: " & mySql)
-        objSales = LoadSQL(mySql)
-        If objSales.Tables(0).Rows.Count < 1 Then
-            MsgBox("No Sales recorded", MsgBoxStyle.Information)
-            Exit Sub
-        End If
+            'Sales No CC
+            Dim mySql As String
+            mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
+            mySql &= vbCrLf & "FROM POSENTRY ENT "
+            mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
+            mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
+            mySql &= vbCrLf & "WHERE "
+            mySql &= vbCrLf & "ITM.ITEMNO <> 'CASHD' AND ITM.ITEMNO <> 'CASHO' AND ITM.ITEMNO <> 'CARD3' AND "
+            mySql &= vbCrLf & String.Format("ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
+            mySql &= vbCrLf & "ORDER BY ITM.ITEMNO ASC"
+            objSales = LoadSQL(mySql)
 
-        mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
-        mySql &= vbCrLf & "FROM POSENTRY ENT "
-        mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
-        mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
-        mySql &= vbCrLf & "WHERE "
-        mySql &= vbCrLf & "ITM.ITEMNO <> 'CASHD' AND ITM.ITEMNO <> 'CASHO' AND ITM.SERIALNO <> '' AND "
-        mySql &= vbCrLf & String.Format("ENT.TRANSDATE = '{0}'", dtpExtract.Value.ToString("M/d/yyyy"))
-        mySql &= vbCrLf & "ORDER BY ITM.ITEMNO ASC"
+            'For CC
+            mySql = "SELECT ITM.POSENTRYID, ENT.NAME"
+            mySql &= vbCrLf & "FROM POSENTRY ENT "
+            mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
+            mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
+            mySql &= vbCrLf & "WHERE "
+            mySql &= vbCrLf & String.Format("ITM.ITEMNO = 'CARD3' AND ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
+            tmpCC = LoadSQL(mySql)
 
-        objSerial = LoadSQL(mySql)
-        GeneratePTUFile(objSales, objSerial)
-        MsgBox("SAP Sales extracted", MsgBoxStyle.Information)
+            mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as 'ItemCode', ITMM.ITEMNAME as 'ItemName', ITM.QTY as 'Quantity', ITM.UNITPRICE as 'Price', ITM.SERIALNO as 'IntrSerial'"
+            mySql &= vbCrLf & "FROM POSENTRY ENT "
+            mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
+            mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO "
+            mySql &= vbCrLf & "WHERE "
+            mySql &= vbCrLf & String.Format("ITM.ITEMNO <> 'CARD3' AND ITM.POSENTRYID = '{0}'", tmpCC.Tables(0).Rows(0).Item(0).ToString)
+            objCC = LoadSQL(mySql)
+
+            If objSales.Tables(0).Rows.Count < 1 Or objCC.Tables(0).Rows.Count < 1 Then
+                MsgBox("No Sales recorded", MsgBoxStyle.Information)
+                Exit Sub
+            End If
+
+            ' Serial
+            mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
+            mySql &= vbCrLf & "FROM POSENTRY ENT "
+            mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
+            mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
+            mySql &= vbCrLf & "WHERE "
+            mySql &= vbCrLf & "ITM.ITEMNO <> 'CASHD' AND ITM.ITEMNO <> 'CASHO' AND ITM.SERIALNO <> '' AND "
+            mySql &= vbCrLf & String.Format("ENT.TRANSDATE = '{0}'", dtpExtract.Value.ToString("M/d/yyyy"))
+            mySql &= vbCrLf & "ORDER BY ITM.ITEMNO ASC"
+
+            objSerial = LoadSQL(mySql)
+            GeneratePTUFile(objSales, objSerial, objCC)
+            MsgBox("SAP Sales extracted", MsgBoxStyle.Information)
+            btnGen.Enabled = True
+        Catch ex As Exception
+            btnGen.Enabled = True
+            MsgBox(ex.Message.ToString, MsgBoxStyle.Information, "Extract Error")
+        End Try
     End Sub
 
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
