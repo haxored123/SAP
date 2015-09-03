@@ -12,19 +12,20 @@
             Dim tmpCC As New DataSet
             Dim objCC As New DataSet
             mod_extract.TransDate = dtpExtract.Value.ToString("M/d/yyyy")
-            If devMode Then mod_extract.TransDate = "6/3/2015"
+            If devMode Then mod_extract.TransDate = "12/12/2014"
 
-            'Sales No CC
+            'Sales
             Dim mySql As String
             mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
             mySql &= vbCrLf & "FROM POSENTRY ENT "
             mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
             mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
             mySql &= vbCrLf & "WHERE "
-            mySql &= vbCrLf & "ITM.ITEMNO <> 'CASHD' AND ITM.ITEMNO <> 'CASHO' AND ITM.ITEMNO <> 'CARD3' AND "
+            mySql &= vbCrLf & "POSTYPE = 'Sales' AND ITM.ITEMNO <> 'CASHD' AND ITM.ITEMNO <> 'CASHO' AND ITM.ITEMNO <> 'CARD3' AND "
             mySql &= vbCrLf & String.Format("ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
             mySql &= vbCrLf & "ORDER BY ITM.ITEMNO ASC"
             objSales = LoadSQL(mySql)
+            Console.WriteLine("Output: " & objSales.Tables(0).Rows.Count & vbCrLf & mySql)
 
             'For CC
             mySql = "SELECT ITM.POSENTRYID, ENT.NAME"
@@ -32,20 +33,30 @@
             mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
             mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
             mySql &= vbCrLf & "WHERE "
-            mySql &= vbCrLf & String.Format("ITM.ITEMNO = 'CARD3' AND ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
+            mySql &= vbCrLf & String.Format("POSTYPE = 'Sales' AND ITM.ITEMNO = 'CARD3' AND ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
             tmpCC = LoadSQL(mySql)
 
-            mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as 'ItemCode', ITMM.ITEMNAME as 'ItemName', ITM.QTY as 'Quantity', ITM.UNITPRICE as 'Price', ITM.SERIALNO as 'IntrSerial'"
+
+            Dim entry As String = "0"
+            If tmpCC.Tables(0).Rows.Count = 1 Then entry = tmpCC.Tables(0).Rows(0).Item(0).ToString
+
+            mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
             mySql &= vbCrLf & "FROM POSENTRY ENT "
             mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
             mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO "
             mySql &= vbCrLf & "WHERE "
-            mySql &= vbCrLf & String.Format("ITM.ITEMNO <> 'CARD3' AND ITM.POSENTRYID = '{0}'", tmpCC.Tables(0).Rows(0).Item(0).ToString)
+            mySql &= vbCrLf & String.Format("POSTYPE = 'Sales' AND ITM.ITEMNO <> 'CARD3' AND ITM.POSENTRYID = '{0}'", entry)
+            Console.WriteLine("CC: " & mySql)
             objCC = LoadSQL(mySql)
+            Console.WriteLine("Output: " & objCC.Tables(0).Rows.Count)
 
-            If objSales.Tables(0).Rows.Count < 1 Or objCC.Tables(0).Rows.Count < 1 Then
-                MsgBox("No Sales recorded", MsgBoxStyle.Information)
-                Exit Sub
+
+            If objSales.Tables(0).Rows.Count < 1 Then
+                If objCC.Tables(0).Rows.Count < 1 Then
+                    MsgBox("No Sales recorded", MsgBoxStyle.Information)
+                    btnGen.Enabled = True
+                    Exit Sub
+                End If
             End If
 
             ' Serial

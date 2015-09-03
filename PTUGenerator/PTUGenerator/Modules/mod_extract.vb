@@ -8,8 +8,8 @@ Module mod_extract
     Friend fileFormat As String = "fileformat.xlsx"
     Friend CustomerCode As String = "CTPF 90001"
     Friend CreditCardCode As String = "CTPF 90050"
-    Friend TransDate As String = "8/13/2015"
-    Friend BranchCode As String = "ROX"
+    Friend TransDate As String = "12/12/2014"
+    Friend BranchCode As String = "ROG"
     Friend AreaCode As String = "GSC"
     Friend SaveUrl As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
 
@@ -18,6 +18,7 @@ Module mod_extract
     ''' </summary>
     ''' <param name="dsTrans">Dataset of Sales</param>
     ''' <param name="dsSerial">Dataset of Serials</param>
+    ''' <param name="dsCC">Dataset of CC</param>
     ''' <remarks></remarks>
     Public Sub GeneratePTUFile(ByVal dsTrans As DataSet, ByVal dsSerial As DataSet, ByVal dsCC As DataSet)
         'Excel
@@ -68,7 +69,7 @@ Module mod_extract
         Next
         Dim ccCnt As Integer = dsTrans.Tables(0).Rows.Count
         For cnt = 0 To dsCC.Tables(0).Rows.Count - 1 'CC
-            oSheet.Cells(ccCnt + cnt, 1) = 1
+            oSheet.Cells(ccCnt + cnt, 1) = 2 'Next recordKey
             With dsCC.Tables(0).Rows(cnt)
                 Dim prc As Double = .Item("Price") / 1.12 'remove VAT
                 oSheet.Cells(ccCnt + cnt, 2) = .Item("ItemCode")

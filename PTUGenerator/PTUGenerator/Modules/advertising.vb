@@ -1,9 +1,11 @@
 ﻿Module advertising
     Dim script As String = ""
+    Dim keyWords As String = ""
     Dim fileAds As String = "ads.html"
 
     Friend Sub InitializedAds()
-        script = "<script async src=""//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js""></script>"
+        keyWords = "computer, IT, department, software, pgc, perfecto, dalton, perfecom, pcom, system, program, develop, hardware, technical, MIS"
+        script = "<script async src=""http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js""></script>"
         script &= vbCrLf & "<!-- Windows Apps -->"
         script &= vbCrLf & "<ins class=""adsbygoogle"""
         script &= vbCrLf & "style=""display:block"""
@@ -13,6 +15,8 @@
         script &= vbCrLf & "<script>"
         script &= vbCrLf & "(adsbygoogle = window.adsbygoogle || []).push({});"
         script &= vbCrLf & "</script>"
+
+        script = "<div style=""visibility:hidden;"">" & keyWords & "</div>" & vbCrLf & script
     End Sub
 
     Friend Function DisplayAds() As String
