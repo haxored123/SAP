@@ -11,6 +11,7 @@ Module mod_extract
     Friend TransDate As String = "12/12/2014"
     Friend BranchCode As String = "ROG"
     Friend AreaCode As String = "GSC"
+    Friend Company As String = "Perfecom"
     Friend SaveUrl As String = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
 
     ''' <summary>
@@ -59,9 +60,9 @@ Module mod_extract
                 oSheet.Cells(cnt + 2, 4) = .Item("Quantity")
                 oSheet.Cells(cnt + 2, 5) = prc 'Fetch from DB or recompute
                 oSheet.Cells(cnt + 2, 6) = 0 '.Item("Discount") 'Change Discount into 0. to be verified where should it came from.
-                oSheet.Cells(cnt + 2, 7) = BranchCode
-                oSheet.Cells(cnt + 2, 8) = AreaCode
-                oSheet.Cells(cnt + 2, 9) = BranchCode
+                oSheet.Cells(cnt + 2, 7) = BranchCode 'Perfecom BBA|Photo BAB
+                oSheet.Cells(cnt + 2, 8) = IIf(Company = "Perfecom", BranchCode, AreaCode)
+                oSheet.Cells(cnt + 2, 9) = IIf(Company = "Perfecom", AreaCode, BranchCode)
                 oSheet.Cells(cnt + 2, 10) = "OPE"
                 oSheet.Cells(cnt + 2, 13) = "OVAT-N"
             End With

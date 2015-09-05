@@ -36,7 +36,6 @@
             mySql &= vbCrLf & String.Format("POSTYPE = 'Sales' AND ITM.ITEMNO = 'CARD3' AND ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
             tmpCC = LoadSQL(mySql)
 
-
             Dim entry As String = "0"
             If tmpCC.Tables(0).Rows.Count = 1 Then entry = tmpCC.Tables(0).Rows(0).Item(0).ToString
 
@@ -83,41 +82,54 @@
         On Error Resume Next 'Uncomment on Final
 
         advertising.InitializedAds()
-        wbAds.Navigate(DisplayAds)
+        wbAds.Navigate("http://pgc-itdept.org/advertisement/")
 
-        If Not System.IO.File.Exists(configFile) Then
-            System.IO.File.Create(configFile).Dispose()
-
-            With iniFile
-                .Load(configFile)
-
-                .AddSection("Extractor").AddKey("DB").Value = db_Firebird.dbName
-                .AddSection("Extractor").AddKey("Branch").Value = mod_extract.BranchCode
-                .AddSection("Extractor").AddKey("Area").Value = mod_extract.AreaCode
-                .AddSection("Extractor").AddKey("Customer").Value = mod_extract.CustomerCode
-
-                .Save(configFile)
-            End With
-        End If
-
-        With iniFile
-            .Load(configFile)
-            mod_extract.CustomerCode = .GetSection("Extractor").GetKey("Customer").Value
-            mod_extract.BranchCode = .GetSection("Extractor").GetKey("Branch").Value
-            mod_extract.AreaCode = .GetSection("Extractor").GetKey("Area").Value
-            db_Firebird.dbName = .GetSection("Extractor").GetKey("DB").Value
-        End With
+        LoadConfig()
 
         txtArea.Text = mod_extract.AreaCode
         txtBranch.Text = mod_extract.BranchCode
         txtCustomer.Text = mod_extract.CustomerCode
+
+        Me.Text = My.Application.Info.Title & "|" & mod_extract.Company & " by IT Department 2015"
 
         txtArea.ReadOnly = True
         txtBranch.ReadOnly = True
         txtCustomer.ReadOnly = True
     End Sub
 
+    Private Sub LoadConfig()
+        Try
+            If Not System.IO.File.Exists(configFile) Then
+                System.IO.File.Create(configFile).Dispose()
+
+                With iniFile
+                    .Load(configFile)
+
+                    .AddSection("Extractor").AddKey("DB").Value = db_Firebird.dbName
+                    .AddSection("Extractor").AddKey("Branch").Value = mod_extract.BranchCode
+                    .AddSection("Extractor").AddKey("Area").Value = mod_extract.AreaCode
+                    .AddSection("Extractor").AddKey("Customer").Value = mod_extract.CustomerCode
+                    .AddSection("Extractor").AddKey("Company").Value = mod_extract.Company
+
+                    .Save(configFile)
+                End With
+            End If
+
+            With iniFile
+                .Load(configFile)
+                mod_extract.CustomerCode = .GetSection("Extractor").GetKey("Customer").Value
+                mod_extract.BranchCode = .GetSection("Extractor").GetKey("Branch").Value
+                mod_extract.AreaCode = .GetSection("Extractor").GetKey("Area").Value
+                mod_extract.Company = .GetSection("Extractor").GetKey("Company").Value
+                db_Firebird.dbName = .GetSection("Extractor").GetKey("DB").Value
+            End With
+        Catch ex As Exception
+            MsgBox("Configuration Corrupted" & vbCrLf & ex.Message.ToString & vbCr & "System Closing...", MsgBoxStyle.Critical, "Load Config Failed")
+            End
+        End Try
+    End Sub
+
     Private Sub wbAds_DocumentCompleted(ByVal sender As System.Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles wbAds.DocumentCompleted
-        pbIT.Visible = True
+        pbIT.Visible = False
     End Sub
 End Class
