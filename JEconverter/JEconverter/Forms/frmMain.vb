@@ -1,7 +1,10 @@
 ﻿Public Class frmMain
     Dim options As DataSet
+    Dim adsShow As Boolean = False
 
     Private Sub btnLoad_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnLoad.Click
+        StartAds()
+
         If lvJE.Items.Count <= 0 Then
             Exit Sub
         End If
@@ -18,6 +21,13 @@
 
         Dim lv As ListViewItem = lvJE.Items.Add(branchCode)
         lv.SubItems.Add(url)
+    End Sub
+
+    Private Sub StartAds()
+        If Not adsShow Then
+            wbAds.Navigate("http://adf.ly/7104086/banner/google.com")
+            adsShow = True
+        End If
     End Sub
 
     Private Sub CheckingValidity()
@@ -113,8 +123,6 @@
 
         lblSaveURL.Text = saveAsPath
         Console.WriteLine("Path: " & saveAsPath)
-
-        wbAds.Navigate("http://adf.ly/7104086/banner/google.com")
     End Sub
 
     Private Sub btnConvert_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnConvert.Click
