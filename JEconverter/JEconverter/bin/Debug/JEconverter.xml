@@ -1,0 +1,40 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+JEconverter
+</name>
+</assembly>
+<members>
+<member name="M:JEconverter.mod_excel.getBranchInfo(System.String,JEconverter.mod_excel.SheetNum,System.Int32)">
+	<summary>
+ Get Config Value for a specific Branch
+ </summary>
+	<param name="branchCode">Three (3) letter code representing the branch</param>
+	<param name="configSheet">Identify which Sheet do you want to get the result</param>
+	<param name="colNum">Return the column Number entered. Default 2</param>
+	<returns>Information of the Branch, 0 if non</returns>
+	<remarks></remarks>
+</member><member name="P:JEconverter.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:JEconverter.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:JEconverter.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="M:JEconverter.mod_death.hashMe(System.String)">
+	<summary>
+ Generate HASH Value
+ </summary>
+	<param name="str">String you want to be hash</param>
+	<returns>String</returns>
+	<remarks></remarks>
+</member>
+</members>
+</doc>

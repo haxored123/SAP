@@ -69,55 +69,99 @@ Module mod_excel
     End Sub
 
     Private Sub ConvertingToSAP(ByVal dsJE As BranchJE)
-        Dim options As DataSet = loadConfig(4)
-        'Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+        Dim options As DataSet = loadConfig(SheetNum.Options)
+        Dim cnt As Integer = 0
 
         'Excel
         Dim oXL As New Excel.Application
         Dim oWB As Excel.Workbook
         Dim oSheet As Excel.Worksheet
 
-        oWB = oXL.Workbooks.Open(Application.StartupPath & "\Format.xlsx")
-        oSheet = oWB.Worksheets(1) 'Document
+        Try
+            oWB = oXL.Workbooks.Open(Application.StartupPath & "\Format.xlsx")
+            oSheet = oWB.Worksheets(1) 'Document
 
-        'Adding One Row
-        oSheet.Cells(3, 1) = 1 'JDT_NUM
-        oSheet.Cells(3, 2) = dsJE.DocDate.ToString("yyyyMMdd") 'RefDate
-        oSheet.Cells(3, 8) = dsJE.DocDate.ToString("yyyyMMdd") 'TaxDate
-        oSheet.Cells(3, 10) = "tNO" 'UseAutoStorno
-        oSheet.Cells(3, 12) = dsJE.DocDate.ToString("yyyyMMdd") 'VatDate
-        oSheet.Cells(3, 14) = "tNO" 'StampTax
+            'Adding One Row
+            oSheet.Cells(3, 1) = 1 'JDT_NUM
+            oSheet.Cells(3, 2) = dsJE.DocDate.ToString("yyyyMMdd") 'RefDate
+            oSheet.Cells(3, 8) = dsJE.DocDate.ToString("yyyyMMdd") 'TaxDate
+            oSheet.Cells(3, 10) = "tNO" 'UseAutoStorno
+            oSheet.Cells(3, 12) = dsJE.DocDate.ToString("yyyyMMdd") 'VatDate
+            oSheet.Cells(3, 14) = "tNO" 'StampTax
 
-        oSheet = oWB.Worksheets(2) 'DocumentLines
+            oSheet = oWB.Worksheets(2) 'DocumentLines
+            Dim ds As DataSet = dsJE.JournalEntries
+            Dim MaxRow As Integer = ds.Tables(fillData).Rows.Count
+            For cnt = 0 To MaxRow - 1
+                With ds.Tables(fillData).Rows(cnt)
+                    oSheet.Cells(cnt + 3, 1) = 1 'ParentKey
+                    oSheet.Cells(cnt + 3, 2) = cnt 'LineNum
+                    oSheet.Cells(cnt + 3, 4) = .Item("AccountNo").ToString 'AccountCode
+                    oSheet.Cells(cnt + 3, 5) = .Item("Debit") 'Debit
+                    oSheet.Cells(cnt + 3, 6) = .Item("Credit") 'Credit
+                    oSheet.Cells(cnt + 3, 19) = dsJE.AreaCode 'ProfitCode
+                    oSheet.Cells(cnt + 3, 32) = dsJE.BranchCode 'OcrCode2
+                    oSheet.Cells(cnt + 3, 33) = "OPE" 'OcrCode3
+                End With
 
-        Dim ds As DataSet = dsJE.JournalEntries
-        Dim MaxRow As Integer = ds.Tables(fillData).Rows.Count
-        For cnt As Integer = 0 To MaxRow - 1
-            With ds.Tables(fillData).Rows(cnt)
-                oSheet.Cells(cnt + 3, 1) = 1 'ParentKey
-                oSheet.Cells(cnt + 3, 2) = cnt 'LineNum
-                oSheet.Cells(cnt + 3, 4) = .Item("AccountNo").ToString 'AccountCode
-                oSheet.Cells(cnt + 3, 5) = .Item("Debit") 'Debit
-                oSheet.Cells(cnt + 3, 6) = .Item("Credit") 'Credit
-                oSheet.Cells(cnt + 3, 19) = dsJE.BranchCode 'ProfitCode
-                oSheet.Cells(cnt + 3, 32) = dsJE.AreaCode 'OcrCode2
-                oSheet.Cells(cnt + 3, 33) = "OPE" 'OcrCode3
-            End With
+                Application.DoEvents()
+            Next
 
-            Application.DoEvents()
-        Next
+            'Save As
+            Dim saveAsFilename As String = "CONV-"
+            Dim saveType As String = "Excel"
+            If options.Tables.Count > 0 Then
+                Dim dr As DataRow = options.Tables(fillData).Select("Key = 'SaveType'")(0)
+                saveType = dr.Item("Value")
+                Select Case saveType.ToUpper
+                    Case "EXCEL"
+                        saveAsFilename &= dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".xlsx"
+                        oWB.SaveAs(saveAsPath & "\" & saveAsFilename)
+                    Case "TAB"
+                        oXL.DisplayAlerts = False
 
-        'Save As
-        Dim saveAsFilename As String = "CONV-"
-        saveAsFilename &= dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".xlsx"
+                        oSheet = oWB.Worksheets(1)
+                        oSheet.Activate() 'Document
+                        saveAsFilename = "doc_" & dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".txt"
+                        oWB.SaveAs(saveAsPath & "\" & saveAsFilename, Microsoft.Office.Interop.Excel.XlFileFormat.xlCurrentPlatformText)
 
-        oWB.SaveAs(saveAsPath & "\" & saveAsFilename)
+                        oSheet = oWB.Worksheets(2)
+                        oSheet.Activate() 'DocumentsLines
+                        saveAsFilename = "docLn_" & dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".txt"
+                        oWB.SaveAs(saveAsPath & "\" & saveAsFilename, Microsoft.Office.Interop.Excel.XlFileFormat.xlCurrentPlatformText)
+                    Case "CSV"
+                        oXL.DisplayAlerts = False
 
-        'Memory Unload
-        oSheet = Nothing
-        oWB = Nothing
-        oXL.Quit()
-        oXL = Nothing
+                        oSheet = oWB.Worksheets(1)
+                        oSheet.Activate() 'Document
+                        saveAsFilename = "doc_" & dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".csv"
+                        oWB.SaveAs(saveAsPath & "\" & saveAsFilename, Microsoft.Office.Interop.Excel.XlFileFormat.xlCSV)
+
+                        oSheet = oWB.Worksheets(2)
+                        oSheet.Activate() 'DocumentsLines
+                        saveAsFilename = "docLn_" & dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".csv"
+                        oWB.SaveAs(saveAsPath & "\" & saveAsFilename, Microsoft.Office.Interop.Excel.XlFileFormat.xlCSV)
+                End Select
+            Else
+                saveAsFilename &= dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".xlsx"
+                oWB.SaveAs(saveAsPath & "\" & saveAsFilename)
+            End If
+
+            'Memory Unload
+            oSheet = Nothing
+            oWB = Nothing
+            oXL.Quit()
+            oXL = Nothing
+        Catch ex As Exception
+            'Memory Unload
+            oSheet = Nothing
+            oWB = Nothing
+            oXL.Quit()
+            oXL = Nothing
+
+            MsgBox("Failed to convert SAP File" & vbCr & "FileURL: " & dsJE.FileURL & vbCr & "Row Number: " & cnt & vbCr & _
+                   ex.Message.ToString, MsgBoxStyle.Critical)
+        End Try
     End Sub
 
     Private Function getJE(ByVal branch As BranchJE) As DataSet
@@ -129,72 +173,71 @@ Module mod_excel
         Dim ds As New DataSet, dt As New DataTable(fillData)
         Dim accCol As DataColumn, debitCol As DataColumn, creditCol As DataColumn
         Dim dsNewRow As DataRow
-
         Dim rowIdx As Integer = 0
-        oWB = oXL.Workbooks.Open(branch.FileURL)
-        oSheet = oWB.Worksheets(1)
 
-        Dim MaxEntries As Integer
-        With oSheet
-            MaxEntries = .Cells(.Rows.Count, 1).End(Excel.XlDirection.xlUp).row
-        End With
+        Try
+            oWB = oXL.Workbooks.Open(branch.FileURL)
+            oSheet = oWB.Worksheets(1)
 
-        accCol = New DataColumn("AccountNo", GetType(String))
-        debitCol = New DataColumn("Debit", GetType(Integer))
-        creditCol = New DataColumn("Credit", GetType(Integer))
-
-        ds.Tables.Add(dt)
-        ds.Tables(fillData).Columns.Add(accCol)
-        ds.Tables(fillData).Columns.Add(debitCol)
-        ds.Tables(fillData).Columns.Add(creditCol)
-
-        Dim COA As DataSet = loadConfig(SheetNum.COA)
-        Dim Rfund As DataSet = loadConfig(SheetNum.RevolvingFunds)
-        Dim tmpStr As String
-        Dim tmpDr() As DataRow
-
-        For rowIdx = 2 To MaxEntries
-            tmpStr = oSheet.Cells(rowIdx, 2).value
-            If tmpStr = "000002" Then 'Change for Revolving Fund Codes
-                tmpDr = Rfund.Tables(fillData).Select("BranchCode = '" & branch.BranchCode & "'")
-                tmpStr = "NO SAP COA - RF"
-                If tmpDr.Count > 0 Then tmpStr = tmpDr(0).Item("COA")
-            Else
-                tmpDr = COA.Tables(fillData).Select("AccountNo = '" & tmpStr & "'")
-                tmpStr = "NO SAP COA"
-                If tmpDr.Count > 0 Then tmpStr = tmpDr(0).Item("SAPCOA")
-            End If
-
-            dsNewRow = ds.Tables(fillData).NewRow
-            With dsNewRow
-                .Item("AccountNo") = tmpStr
-                .Item("Debit") = IIf(oSheet.Cells(rowIdx, 4).value = Nothing, 0, oSheet.Cells(rowIdx, 4).value)
-                .Item("Credit") = IIf(oSheet.Cells(rowIdx, 5).value = Nothing, 0, oSheet.Cells(rowIdx, 5).value)
+            Dim MaxEntries As Integer
+            With oSheet
+                MaxEntries = .Cells(.Rows.Count, 1).End(Excel.XlDirection.xlUp).row
             End With
-            ds.Tables(fillData).Rows.Add(dsNewRow)
 
-            Application.DoEvents()
-        Next
+            accCol = New DataColumn("AccountNo", GetType(String))
+            debitCol = New DataColumn("Debit", GetType(Integer))
+            creditCol = New DataColumn("Credit", GetType(Integer))
 
-        'Memory Unload
-        oSheet = Nothing
-        oWB = Nothing
-        oXL.Quit()
-        oXL = Nothing
+            ds.Tables.Add(dt)
+            ds.Tables(fillData).Columns.Add(accCol)
+            ds.Tables(fillData).Columns.Add(debitCol)
+            ds.Tables(fillData).Columns.Add(creditCol)
 
-        'Try
+            Dim COA As DataSet = loadConfig(SheetNum.COA)
+            Dim Rfund As DataSet = loadConfig(SheetNum.RevolvingFunds)
+            Dim tmpStr As String
+            Dim tmpDr() As DataRow
 
-        'Catch ex As Exception
-        '    'Memory Unload
-        '    oSheet = Nothing
-        '    oWB = Nothing
-        '    oXL.Quit()
-        '    oXL = Nothing
+            For rowIdx = 2 To MaxEntries
+                tmpStr = oSheet.Cells(rowIdx, 2).value
+                If tmpStr = "000002" Then 'Change for Revolving Fund Codes
+                    tmpDr = Rfund.Tables(fillData).Select("BranchCode = '" & branch.BranchCode & "'")
+                    tmpStr = "NO SAP COA - RF (" & tmpStr & "|" & branch.BranchCode & ")"
+                    If tmpDr.Count > 0 Then tmpStr = tmpDr(0).Item("COA")
+                Else
+                    tmpDr = COA.Tables(fillData).Select("AccountNo = '" & tmpStr & "'")
+                    tmpStr = "NO SAP COA(" & tmpStr & ")"
+                    If tmpDr.Count > 0 Then tmpStr = tmpDr(0).Item("SAPCOA")
+                End If
 
-        '    MsgBox("Error Occurred. Please check the following" & vbCrLf & _
-        '        "File: " & fileURL & vbCrLf & "RowNumber: " & rowIdx)
-        '    ds = Nothing
-        'End Try
+                dsNewRow = ds.Tables(fillData).NewRow
+                With dsNewRow
+                    .Item("AccountNo") = tmpStr
+                    .Item("Debit") = IIf(oSheet.Cells(rowIdx, 4).value = Nothing, 0, oSheet.Cells(rowIdx, 4).value)
+                    .Item("Credit") = IIf(oSheet.Cells(rowIdx, 5).value = Nothing, 0, oSheet.Cells(rowIdx, 5).value)
+                End With
+                ds.Tables(fillData).Rows.Add(dsNewRow)
+
+                Application.DoEvents()
+            Next
+
+            'Memory Unload
+            oSheet = Nothing
+            oWB = Nothing
+            oXL.Quit()
+            oXL = Nothing
+
+        Catch ex As Exception
+            'Memory Unload
+            oSheet = Nothing
+            oWB = Nothing
+            oXL.Quit()
+            oXL = Nothing
+
+            MsgBox("Error Occurred. Please check the following" & vbCrLf & _
+                "File: " & branch.FileURL & vbCrLf & "RowNumber: " & rowIdx, MsgBoxStyle.Critical, "GET JE")
+            ds = Nothing
+        End Try
 
         Return ds
     End Function

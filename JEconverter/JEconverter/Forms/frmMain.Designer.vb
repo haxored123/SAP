@@ -22,6 +22,7 @@ Partial Class frmMain
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         Me.btnLoad = New System.Windows.Forms.Button()
         Me.lvJE = New System.Windows.Forms.ListView()
@@ -34,6 +35,8 @@ Partial Class frmMain
         Me.pbLogo = New System.Windows.Forms.PictureBox()
         Me.ofdJE = New System.Windows.Forms.OpenFileDialog()
         Me.btnBrowse = New System.Windows.Forms.Button()
+        Me.wbAds = New System.Windows.Forms.WebBrowser()
+        Me.tmrAds = New System.Windows.Forms.Timer(Me.components)
         CType(Me.pbLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -121,9 +124,9 @@ Partial Class frmMain
         Me.pbLogo.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pbLogo.Image = CType(resources.GetObject("pbLogo.Image"), System.Drawing.Image)
-        Me.pbLogo.Location = New System.Drawing.Point(2, 366)
+        Me.pbLogo.Location = New System.Drawing.Point(2, 367)
         Me.pbLogo.Name = "pbLogo"
-        Me.pbLogo.Size = New System.Drawing.Size(730, 95)
+        Me.pbLogo.Size = New System.Drawing.Size(731, 95)
         Me.pbLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.pbLogo.TabIndex = 6
         Me.pbLogo.TabStop = False
@@ -143,6 +146,20 @@ Partial Class frmMain
         Me.btnBrowse.Text = "..."
         Me.btnBrowse.UseVisualStyleBackColor = True
         '
+        'wbAds
+        '
+        Me.wbAds.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.wbAds.Location = New System.Drawing.Point(2, 366)
+        Me.wbAds.MinimumSize = New System.Drawing.Size(20, 20)
+        Me.wbAds.Name = "wbAds"
+        Me.wbAds.Size = New System.Drawing.Size(731, 95)
+        Me.wbAds.TabIndex = 7
+        '
+        'tmrAds
+        '
+        Me.tmrAds.Interval = 1000
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -158,6 +175,7 @@ Partial Class frmMain
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.lvJE)
         Me.Controls.Add(Me.btnLoad)
+        Me.Controls.Add(Me.wbAds)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -178,5 +196,7 @@ Partial Class frmMain
     Friend WithEvents pbLogo As System.Windows.Forms.PictureBox
     Friend WithEvents ofdJE As System.Windows.Forms.OpenFileDialog
     Friend WithEvents btnBrowse As System.Windows.Forms.Button
+    Friend WithEvents wbAds As System.Windows.Forms.WebBrowser
+    Friend WithEvents tmrAds As System.Windows.Forms.Timer
 
 End Class

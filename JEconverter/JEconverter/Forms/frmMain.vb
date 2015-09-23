@@ -113,6 +113,8 @@
 
         lblSaveURL.Text = saveAsPath
         Console.WriteLine("Path: " & saveAsPath)
+
+        wbAds.Navigate("http://adf.ly/7104086/banner/google.com")
     End Sub
 
     Private Sub btnConvert_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnConvert.Click
@@ -144,5 +146,27 @@
         Else
             Console.WriteLine("Canceled")
         End If
+    End Sub
+
+    Private Sub lvJE_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles lvJE.KeyDown
+        If e.KeyCode = Keys.Delete Then
+            For Each i As ListViewItem In lvJE.SelectedItems
+                lvJE.Items.Remove(i)
+            Next
+        End If
+    End Sub
+
+    Private Sub wbAds_DocumentCompleted(ByVal sender As System.Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles wbAds.DocumentCompleted
+        tmrAds.Enabled = True
+    End Sub
+
+    Private Sub tmrAds_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrAds.Tick
+        Static cnt As Integer
+        Console.WriteLine("Tick Tok")
+        If cnt >= 5 Then
+            pbLogo.Visible = False
+            tmrAds.Enabled = False
+        End If
+        cnt += 1
     End Sub
 End Class
