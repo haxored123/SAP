@@ -22,6 +22,7 @@ Partial Class frmMain
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         Me.dtpExtract = New System.Windows.Forms.DateTimePicker()
         Me.btnGen = New System.Windows.Forms.Button()
@@ -34,6 +35,7 @@ Partial Class frmMain
         Me.Label1 = New System.Windows.Forms.Label()
         Me.pbIT = New System.Windows.Forms.PictureBox()
         Me.wbAds = New System.Windows.Forms.WebBrowser()
+        Me.tmrAds = New System.Windows.Forms.Timer(Me.components)
         Me.GroupBox1.SuspendLayout()
         CType(Me.pbIT, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -135,6 +137,10 @@ Partial Class frmMain
         Me.wbAds.Size = New System.Drawing.Size(735, 98)
         Me.wbAds.TabIndex = 4
         '
+        'tmrAds
+        '
+        Me.tmrAds.Interval = 1000
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -149,6 +155,7 @@ Partial Class frmMain
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.Name = "frmMain"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Extractor"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
@@ -167,5 +174,6 @@ Partial Class frmMain
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents pbIT As System.Windows.Forms.PictureBox
     Friend WithEvents wbAds As System.Windows.Forms.WebBrowser
+    Friend WithEvents tmrAds As System.Windows.Forms.Timer
 
 End Class

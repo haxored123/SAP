@@ -50,11 +50,13 @@ Module db_Firebird
         End Try
     End Function
 
-    Public Function LoadSQL(ByVal mySql As String) As DataSet
+    Public Function LoadSQL(ByVal mySql As String, Optional ByVal fillData As String = "CustomSQL") As DataSet
         Try
+            'Console.WriteLine("Reading SQL Command===================================================---------------")
+            'Console.WriteLine(mySql)
+            'Console.WriteLine("===============================================================================------")
             dbOpen()
             Dim da As OdbcDataAdapter
-            Dim fillData As String = "CustomSQL"
             Dim ds As New DataSet
 
             ds.Clear()

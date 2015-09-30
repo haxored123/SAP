@@ -1,18 +1,90 @@
 ﻿Public Class frmMain
 
-    Private configFile As String = "Aerauxel.ini"
-    Private iniFile As New IniFile
+    Friend configFile As String = "Aerauxel.ini"
+    Friend iniFile As New IniFile
+    Dim adShow As Boolean = False
+
+    Private Sub fetchingSales(ByVal st As Date)
+        Try
+            Dim dailySalesOR As New DataSet
+            Dim mySql As String
+            mySql = "SELECT ID, TRANSDATE "
+            mySql &= vbCr & "FROM POSENTRY  "
+            mySql &= vbCr & String.Format("WHERE POSTYPE = 'Sales' AND TRANSDATE = '{0}'", st.ToString("M/d/yyyy"))
+
+            dailySalesOR = LoadSQL(mySql, "GetAll")
+            Dim MaxRow As Integer = dailySalesOR.Tables("GetAll").Rows.Count
+            For idx As Integer = 0 To MaxRow - 1
+                With dailySalesOR
+                    Dim EntryID As String = .Tables("GetAll").Rows(idx).Item("ID")
+                    mySql = "SELECT ITM.POSENTRYID, ITM.LINENO, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"" "
+                    mySql &= vbCrLf & "FROM POSITEM ITM INNER JOIN ITEMMASTER ITMM ON ITMM.ITEMNO = ITM.ITEMNO "
+                    mySql &= vbCrLf & String.Format("WHERE ITM.POSENTRYID = '{0}'", EntryID)
+
+                    Dim tmpSales As DataSet = LoadSQL(mySql)
+                    Dim tmpMaxCount As Integer = tmpSales.Tables(0).Rows.Count
+                    Dim tblName As String = tmpSales.Tables(0).Rows(tmpMaxCount - 1).Item("ItemCode")
+
+                    mySql &= vbCrLf & " AND ITM.QTY > 0"
+                    tmpSales = LoadSQL(mySql, tblName)
+
+                    If Not dailySalesOR.Tables.Contains(tblName) Then
+                        dailySalesOR.Tables.Add(tmpSales.Tables(tblName).Copy)
+                    Else
+                        dailySalesOR.Merge(tmpSales.Tables(tblName))
+                    End If
+                End With
+                Console.WriteLine("-------------------======================================TransNum: " & idx)
+
+                Application.DoEvents()
+            Next
+
+            Console.WriteLine("Tables: " & dailySalesOR.Tables.Count)
+            Dim str As String = ""
+            For cnt As Integer = 0 To dailySalesOR.Tables.Count - 1
+                str &= dailySalesOR.Tables(cnt).TableName & vbTab
+            Next
+            Console.WriteLine(str)
+
+            'Display DataSets
+            'Dim MaxTableCnt As Integer = dailySalesOR.Tables.Count
+            'For idx = 0 To MaxTableCnt - 1
+            '    Console.WriteLine("Table: " & dailySalesOR.Tables(idx).TableName)
+            '    Console.WriteLine("Number of Column: " & dailySalesOR.Tables(idx).Columns.Count)
+
+            '    For RoxIdx As Integer = 0 To dailySalesOR.Tables(idx).Rows.Count - 1
+            '        With dailySalesOR.Tables(idx).Rows(RoxIdx)
+            '            Dim str As String = ""
+            '            For ColIdx As Integer = 0 To dailySalesOR.Tables(idx).Columns.Count - 1
+            '                str &= .Item(ColIdx) & vbTab
+            '            Next
+            '            Console.WriteLine(str)
+            '        End With
+            '    Next
+            'Next
+
+            mod_extract.GeneratePTUFileV2(dailySalesOR)
+
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical, "Error Fetching")
+        End Try
+    End Sub
 
     Private Sub btnGen_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnGen.Click
+        mod_extract.TransDate = dtpExtract.Value.ToString("M/d/yyyy")
+        If devMode Then mod_extract.TransDate = "9/28/2015"
+        fetchingSales(mod_extract.TransDate)
+
+        Exit Sub
         Try
             btnGen.Enabled = False
+            tmrAds.Enabled = True
 
             Dim objSales As New DataSet
             Dim objSerial As New DataSet
             Dim tmpCC As New DataSet
             Dim objCC As New DataSet
             mod_extract.TransDate = dtpExtract.Value.ToString("M/d/yyyy")
-            If devMode Then mod_extract.TransDate = "12/12/2014"
 
             'Sales
             Dim mySql As String
@@ -21,42 +93,44 @@
             mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
             mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
             mySql &= vbCrLf & "WHERE "
-            mySql &= vbCrLf & "POSTYPE = 'Sales' AND ITM.ITEMNO <> 'CASHD' AND ITM.ITEMNO <> 'CASHO' AND ITM.ITEMNO <> 'CARD3' AND "
+            mySql &= vbCrLf & "POSTYPE = 'Sales' AND ITM.QTY > 0"
             mySql &= vbCrLf & String.Format("ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
             mySql &= vbCrLf & "ORDER BY ITM.ITEMNO ASC"
             objSales = LoadSQL(mySql)
             Console.WriteLine("Output: " & objSales.Tables(0).Rows.Count & vbCrLf & mySql)
 
+            'For no ITEMNAME
+
             'For CC
-            mySql = "SELECT ITM.POSENTRYID, ENT.NAME"
-            mySql &= vbCrLf & "FROM POSENTRY ENT "
-            mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
-            mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
-            mySql &= vbCrLf & "WHERE "
-            mySql &= vbCrLf & String.Format("POSTYPE = 'Sales' AND ITM.ITEMNO = 'CARD3' AND ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
-            tmpCC = LoadSQL(mySql)
+            'mySql = "SELECT ITM.POSENTRYID, ENT.NAME"
+            'mySql &= vbCrLf & "FROM POSENTRY ENT "
+            'mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
+            'mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO"
+            'mySql &= vbCrLf & "WHERE "
+            'mySql &= vbCrLf & String.Format("POSTYPE = 'Sales' AND ITM.ITEMNO = 'CARD3' AND ENT.TRANSDATE = '{0}'", mod_extract.TransDate)
+            'tmpCC = LoadSQL(mySql)
 
-            Dim entry As String = "0"
-            If tmpCC.Tables(0).Rows.Count = 1 Then entry = tmpCC.Tables(0).Rows(0).Item(0).ToString
+            'Dim entry As String = "0"
+            'If tmpCC.Tables(0).Rows.Count = 1 Then entry = tmpCC.Tables(0).Rows(0).Item(0).ToString
 
-            mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
-            mySql &= vbCrLf & "FROM POSENTRY ENT "
-            mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
-            mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO "
-            mySql &= vbCrLf & "WHERE "
-            mySql &= vbCrLf & String.Format("POSTYPE = 'Sales' AND ITM.ITEMNO <> 'CARD3' AND ITM.POSENTRYID = '{0}'", entry)
-            Console.WriteLine("CC: " & mySql)
-            objCC = LoadSQL(mySql)
-            Console.WriteLine("Output: " & objCC.Tables(0).Rows.Count)
+            'mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
+            'mySql &= vbCrLf & "FROM POSENTRY ENT "
+            'mySql &= vbCrLf & "INNER JOIN POSITEM ITM ON ENT.ID = ITM.POSENTRYID"
+            'mySql &= vbCrLf & "LEFT JOIN ITEMMASTER ITMM ON ITM.ITEMNO = ITMM.ITEMNO "
+            'mySql &= vbCrLf & "WHERE "
+            'mySql &= vbCrLf & String.Format("POSTYPE = 'Sales' AND ITM.ITEMNO <> 'CARD3' AND ITM.POSENTRYID = '{0}'", entry)
+            'Console.WriteLine("CC: " & mySql)
+            'objCC = LoadSQL(mySql)
+            'Console.WriteLine("Output: " & objCC.Tables(0).Rows.Count)
 
 
-            If objSales.Tables(0).Rows.Count < 1 Then
-                If objCC.Tables(0).Rows.Count < 1 Then
-                    MsgBox("No Sales recorded", MsgBoxStyle.Information)
-                    btnGen.Enabled = True
-                    Exit Sub
-                End If
-            End If
+            'If objSales.Tables(0).Rows.Count < 1 Then
+            '    If objCC.Tables(0).Rows.Count < 1 Then
+            '        MsgBox("No Sales recorded", MsgBoxStyle.Information)
+            '        btnGen.Enabled = True
+            '        Exit Sub
+            '    End If
+            'End If
 
             ' Serial
             mySql = "SELECT ENT.ID, ENT.TRANSDATE, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"""
@@ -79,16 +153,17 @@
     End Sub
 
     Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        If devMode Then MsgBox("DEVELOPER MODE", MsgBoxStyle.Information)
+
         On Error Resume Next 'Uncomment on Final
 
         advertising.InitializedAds()
-        wbAds.Navigate("http://pgc-itdept.org/advertisement/")
+        wbAds.Navigate("http://adf.ly/7104086/banner/pgc-itdept.org/software/ptu-generator/")
 
         LoadConfig()
 
         txtArea.Text = mod_extract.AreaCode
         txtBranch.Text = mod_extract.BranchCode
-        txtCustomer.Text = mod_extract.CustomerCode
 
         Me.Text = My.Application.Info.Title & "|" & mod_extract.Company & " by IT Department 2015"
 
@@ -130,6 +205,18 @@
     End Sub
 
     Private Sub wbAds_DocumentCompleted(ByVal sender As System.Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles wbAds.DocumentCompleted
-        pbIT.Visible = False
+        adShow = True
+    End Sub
+
+    Private Sub tmrAds_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrAds.Tick
+        Static cnt As Integer
+        cnt += 1
+        If cnt >= 5 Then
+            If Not adShow Then
+                tmrAds.Enabled = False
+                pbIT.Visible = False
+            End If
+            cnt = 0
+        End If
     End Sub
 End Class
