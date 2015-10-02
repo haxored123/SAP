@@ -1,4 +1,4 @@
-D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\obj\x86\Release\JEconverter.vbproj.ResolveComReference.cache
+D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\bin\Release\changelog.txt
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\bin\Release\Configuration.xls
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\bin\Release\Format.xlsx
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\bin\Release\JEconverter.exe
@@ -10,6 +10,7 @@ D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\bin\Release\System.Drawi
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\bin\Release\System.Windows.Forms.dll
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\bin\Release\System.Xml.dll
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\bin\Release\System.Xml.Linq.dll
+D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\obj\x86\Release\JEconverter.vbproj.ResolveComReference.cache
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\obj\x86\Release\JEconverter.frmMain.resources
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\obj\x86\Release\JEconverter.Resources.resources
 D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\obj\x86\Release\JEconverter.vbproj.GenerateResource.Cache

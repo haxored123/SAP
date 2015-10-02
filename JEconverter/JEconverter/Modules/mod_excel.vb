@@ -68,6 +68,15 @@ Module mod_excel
         Next
     End Sub
 
+    Private Function cleanPath(ByVal str As String) As String
+        If Right(str, 1) = "\" Then
+            str = str.Substring(0, Len(str) - 1)
+        End If
+
+        Console.WriteLine("Path: " & str)
+        Return str
+    End Function
+
     Private Sub ConvertingToSAP(ByVal dsJE As BranchJE)
         Dim options As DataSet = loadConfig(SheetNum.Options)
         Dim cnt As Integer = 0
@@ -113,6 +122,7 @@ Module mod_excel
             If options.Tables.Count > 0 Then
                 Dim dr As DataRow = options.Tables(fillData).Select("Key = 'SaveType'")(0)
                 saveType = dr.Item("Value")
+                saveAsPath = cleanPath(saveAsPath)
                 Select Case saveType.ToUpper
                     Case "EXCEL"
                         saveAsFilename &= dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".xlsx"
@@ -122,6 +132,7 @@ Module mod_excel
 
                         oSheet = oWB.Worksheets(1)
                         oSheet.Activate() 'Document
+
                         saveAsFilename = "doc_" & dsJE.BranchCode & dsJE.DocDate.ToString("MMddyyyy") & ".txt"
                         oWB.SaveAs(saveAsPath & "\" & saveAsFilename, Microsoft.Office.Interop.Excel.XlFileFormat.xlCurrentPlatformText)
 
@@ -199,8 +210,8 @@ Module mod_excel
             Dim tmpDr() As DataRow
 
             For rowIdx = 2 To MaxEntries
-                tmpStr = oSheet.Cells(rowIdx, 2).value
-                If tmpStr = "000002" Then 'Change for Revolving Fund Codes
+                tmpStr = oSheet.Cells(rowIdx, 3).value 'Change to column 3(AccountName) from column 2(AccountNo)
+                If Left(tmpStr, 16) = "REVOLVING FUND -" Then 'Change for Revolving Fund Codes
                     tmpDr = Rfund.Tables(fillData).Select("BranchCode = '" & branch.BranchCode & "'")
                     tmpStr = "NO SAP COA - RF (" & tmpStr & "|" & branch.BranchCode & ")"
                     If tmpDr.Count > 0 Then tmpStr = tmpDr(0).Item("COA")

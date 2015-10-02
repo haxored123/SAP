@@ -118,6 +118,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -164,6 +165,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="changelog.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Iconarchive-Red-Orb-Alphabet-Letter-D.ico" />
     <Content Include="Ncrow-Mega-Pack-1-Any-DVD-Converter.ico" />
   </ItemGroup>

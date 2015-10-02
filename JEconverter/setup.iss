@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Journal Entries Converter"
-#define MyAppVersion "1"
+#define MyAppVersion "1.0.0.1"
 #define MyAppPublisher "PGC IT Department"
 #define MyAppURL "http://pgc-itdept.org"
 #define MyAppExeName "JEconverter.exe"
@@ -22,7 +22,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\cdt-S0ft\Journal Entries Converter
 DefaultGroupName=cdt-S0ft\Journal Entries Converter
 OutputDir=D:\CaDeAtH\Documents\DevInstaller\JEc
-OutputBaseFilename=jeconv1
+OutputBaseFilename=jeconv1001
 SetupIconFile=D:\CaDeAtH\Documents\GitHub\SAP\JEconverter\JEconverter\Ncrow-Mega-Pack-1-Any-DVD-Converter.ico
 Compression=lzma
 SolidCompression=yes
