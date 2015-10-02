@@ -111,6 +111,7 @@ Partial Class diagOptions
         '
         'cboCompany
         '
+        Me.cboCompany.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cboCompany.FormattingEnabled = True
         Me.cboCompany.Items.AddRange(New Object() {"Photo", "Perfecom"})
         Me.cboCompany.Location = New System.Drawing.Point(204, 24)

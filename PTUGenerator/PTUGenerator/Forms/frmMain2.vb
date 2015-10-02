@@ -39,6 +39,7 @@
     End Sub
 
     Private Sub frmMain2_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-
+        Me.Text = My.Application.Info.Title & "|" & mod_extract.Company & " by IT Department 2015 | Version " & Me.GetType.Assembly.GetName.Version.ToString
+        wbAds.Navigate("http://adf.ly/7104086/banner/pgc-itdept.org/software/ptu-generator/")
     End Sub
 End Class

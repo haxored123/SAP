@@ -3,7 +3,7 @@
 Imports Microsoft.Office.Interop
 
 Module mod_extract
-    Public devMode As Boolean = True
+    Public devMode As Boolean = False
 
     Friend fileFormat As String = "fileformat.xlsx"
     Friend CustomerCode As String = "CTPF 90001"

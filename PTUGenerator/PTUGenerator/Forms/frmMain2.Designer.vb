@@ -34,6 +34,7 @@ Partial Class frmMain2
         Me.txtArea = New System.Windows.Forms.TextBox()
         Me.txtCompany = New System.Windows.Forms.TextBox()
         Me.lblSite = New System.Windows.Forms.Label()
+        Me.wbAds = New System.Windows.Forms.WebBrowser()
         CType(Me.pbIT, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -148,6 +149,14 @@ Partial Class frmMain2
         Me.lblSite.TabIndex = 12
         Me.lblSite.Text = "http://pgc-itdept.org"
         '
+        'wbAds
+        '
+        Me.wbAds.Location = New System.Drawing.Point(2, 176)
+        Me.wbAds.MinimumSize = New System.Drawing.Size(20, 20)
+        Me.wbAds.Name = "wbAds"
+        Me.wbAds.Size = New System.Drawing.Size(734, 95)
+        Me.wbAds.TabIndex = 13
+        '
         'frmMain2
         '
         Me.AcceptButton = Me.btnGen
@@ -166,10 +175,12 @@ Partial Class frmMain2
         Me.Controls.Add(Me.btnGen)
         Me.Controls.Add(Me.mcSales)
         Me.Controls.Add(Me.pbIT)
+        Me.Controls.Add(Me.wbAds)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
         Me.Name = "frmMain2"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "SAP Sales"
         CType(Me.pbIT, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
@@ -187,4 +198,5 @@ Partial Class frmMain2
     Friend WithEvents txtArea As System.Windows.Forms.TextBox
     Friend WithEvents txtCompany As System.Windows.Forms.TextBox
     Friend WithEvents lblSite As System.Windows.Forms.Label
+    Friend WithEvents wbAds As System.Windows.Forms.WebBrowser
 End Class
