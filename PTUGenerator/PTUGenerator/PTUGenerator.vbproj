@@ -49,7 +49,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Custom-Icon-Design-Pretty-Office-7-Extract-todays-changes.ico</ApplicationIcon>
+    <ApplicationIcon>document_export.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
@@ -97,13 +97,6 @@
     <Compile Include="Forms\diagOptions.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmMain.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frmMain.Designer.vb">
-      <DependentUpon>frmMain.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\frmMain2.Designer.vb">
       <DependentUpon>frmMain2.vb</DependentUpon>
     </Compile>
@@ -133,9 +126,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\diagOptions.resx">
       <DependentUpon>diagOptions.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmMain.resx">
-      <DependentUpon>frmMain.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMain2.resx">
       <DependentUpon>frmMain2.vb</DependentUpon>
@@ -187,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Custom-Icon-Design-Pretty-Office-7-Extract-todays-changes.ico" />
+    <Content Include="document_export.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

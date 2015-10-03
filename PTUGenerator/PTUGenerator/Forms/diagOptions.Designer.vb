@@ -29,9 +29,11 @@ Partial Class diagOptions
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtDatabase = New System.Windows.Forms.TextBox()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
+        Me.btnClose = New System.Windows.Forms.Button()
+        Me.btnSave = New System.Windows.Forms.Button()
         Me.cboCompany = New System.Windows.Forms.ComboBox()
+        Me.txtSave = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Label1
@@ -55,7 +57,7 @@ Partial Class diagOptions
         Me.txtArea.Location = New System.Drawing.Point(12, 68)
         Me.txtArea.Name = "txtArea"
         Me.txtArea.Size = New System.Drawing.Size(166, 20)
-        Me.txtArea.TabIndex = 1
+        Me.txtArea.TabIndex = 2
         '
         'Label2
         '
@@ -91,23 +93,23 @@ Partial Class diagOptions
         Me.Label4.TabIndex = 6
         Me.Label4.Text = "Database"
         '
-        'Button1
+        'btnClose
         '
-        Me.Button1.Location = New System.Drawing.Point(451, 92)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 5
-        Me.Button1.Text = "&Close"
-        Me.Button1.UseVisualStyleBackColor = True
+        Me.btnClose.Location = New System.Drawing.Point(449, 106)
+        Me.btnClose.Name = "btnClose"
+        Me.btnClose.Size = New System.Drawing.Size(75, 23)
+        Me.btnClose.TabIndex = 6
+        Me.btnClose.Text = "&Close"
+        Me.btnClose.UseVisualStyleBackColor = True
         '
-        'Button2
+        'btnSave
         '
-        Me.Button2.Location = New System.Drawing.Point(370, 92)
-        Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(75, 23)
-        Me.Button2.TabIndex = 4
-        Me.Button2.Text = "&Save"
-        Me.Button2.UseVisualStyleBackColor = True
+        Me.btnSave.Location = New System.Drawing.Point(368, 106)
+        Me.btnSave.Name = "btnSave"
+        Me.btnSave.Size = New System.Drawing.Size(75, 23)
+        Me.btnSave.TabIndex = 5
+        Me.btnSave.Text = "&Save"
+        Me.btnSave.UseVisualStyleBackColor = True
         '
         'cboCompany
         '
@@ -117,16 +119,34 @@ Partial Class diagOptions
         Me.cboCompany.Location = New System.Drawing.Point(204, 24)
         Me.cboCompany.Name = "cboCompany"
         Me.cboCompany.Size = New System.Drawing.Size(222, 21)
-        Me.cboCompany.TabIndex = 2
+        Me.cboCompany.TabIndex = 1
+        '
+        'txtSave
+        '
+        Me.txtSave.Location = New System.Drawing.Point(12, 109)
+        Me.txtSave.Name = "txtSave"
+        Me.txtSave.Size = New System.Drawing.Size(340, 20)
+        Me.txtSave.TabIndex = 4
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(12, 93)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(57, 13)
+        Me.Label5.TabIndex = 8
+        Me.Label5.Text = "Save Path"
         '
         'diagOptions
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(532, 124)
+        Me.ClientSize = New System.Drawing.Size(532, 138)
+        Me.Controls.Add(Me.txtSave)
+        Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.cboCompany)
-        Me.Controls.Add(Me.Button2)
-        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.btnSave)
+        Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.txtDatabase)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label3)
@@ -148,7 +168,9 @@ Partial Class diagOptions
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents txtDatabase As System.Windows.Forms.TextBox
     Friend WithEvents Label4 As System.Windows.Forms.Label
-    Friend WithEvents Button1 As System.Windows.Forms.Button
-    Friend WithEvents Button2 As System.Windows.Forms.Button
+    Friend WithEvents btnClose As System.Windows.Forms.Button
+    Friend WithEvents btnSave As System.Windows.Forms.Button
     Friend WithEvents cboCompany As System.Windows.Forms.ComboBox
+    Friend WithEvents txtSave As System.Windows.Forms.TextBox
+    Friend WithEvents Label5 As System.Windows.Forms.Label
 End Class

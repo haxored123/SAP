@@ -8,9 +8,14 @@
     End Sub
 
     Private Sub btnGen_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnGen.Click
+        mod_extract.TransDate = mcSales.SelectionRange.Start
+        If devMode Then mod_extract.TransDate = "9/28/2015"
         Frozen(1)
 
+        fetchingSales(mod_extract.TransDate)
 
+        MsgBox(mod_extract.TransDate & " extracted", MsgBoxStyle.Information)
+        Frozen(0)
     End Sub
 
     Private Sub Frozen(ByVal st As Boolean)
@@ -38,8 +43,66 @@
         End With
     End Sub
 
+    Private Sub frmMain2_DoubleClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.DoubleClick
+        diagOptions.Show()
+    End Sub
+
     Private Sub frmMain2_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.Text = My.Application.Info.Title & "|" & mod_extract.Company & " by IT Department 2015 | Version " & Me.GetType.Assembly.GetName.Version.ToString
         wbAds.Navigate("http://adf.ly/7104086/banner/pgc-itdept.org/software/ptu-generator/")
+
+        LoadConfig()
+    End Sub
+
+    Private Sub btnExit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnExit.Click
+        End
+    End Sub
+
+    Private Sub fetchingSales(ByVal st As Date)
+        Try
+            Dim dailySalesOR As New DataSet
+            Dim mySql As String
+            mySql = "SELECT ID, TRANSDATE "
+            mySql &= vbCr & "FROM POSENTRY  "
+            mySql &= vbCr & String.Format("WHERE POSTYPE = 'Sales' AND TRANSDATE = '{0}'", st.ToString("M/d/yyyy"))
+
+            dailySalesOR = LoadSQL(mySql, "GetAll")
+            Dim MaxRow As Integer = dailySalesOR.Tables("GetAll").Rows.Count
+            For idx As Integer = 0 To MaxRow - 1
+                With dailySalesOR
+                    Dim EntryID As String = .Tables("GetAll").Rows(idx).Item("ID")
+                    mySql = "SELECT ITM.POSENTRYID, ITM.LINENO, ITM.ITEMNO as ""ItemCode"", ITMM.ITEMNAME as ""ItemName"", ITM.QTY as ""Quantity"", ITM.UNITPRICE as ""Price"", ITM.SERIALNO as ""IntrSerial"" "
+                    mySql &= vbCrLf & "FROM POSITEM ITM INNER JOIN ITEMMASTER ITMM ON ITMM.ITEMNO = ITM.ITEMNO "
+                    mySql &= vbCrLf & String.Format("WHERE ITM.POSENTRYID = '{0}'", EntryID)
+
+                    Dim tmpSales As DataSet = LoadSQL(mySql)
+                    Dim tmpMaxCount As Integer = tmpSales.Tables(0).Rows.Count
+                    Dim tblName As String = tmpSales.Tables(0).Rows(tmpMaxCount - 1).Item("ItemCode")
+
+                    mySql &= vbCrLf & " AND ITM.QTY > 0"
+                    tmpSales = LoadSQL(mySql, tblName)
+
+                    If Not dailySalesOR.Tables.Contains(tblName) Then
+                        dailySalesOR.Tables.Add(tmpSales.Tables(tblName).Copy)
+                    Else
+                        dailySalesOR.Merge(tmpSales.Tables(tblName))
+                    End If
+                End With
+                Console.WriteLine("-------------------======================================TransNum: " & idx)
+
+                Application.DoEvents()
+            Next
+
+            Console.WriteLine("Tables: " & dailySalesOR.Tables.Count)
+            Dim str As String = ""
+            For cnt As Integer = 0 To dailySalesOR.Tables.Count - 1
+                str &= dailySalesOR.Tables(cnt).TableName & vbTab
+            Next
+            Console.WriteLine(str)
+            mod_extract.GeneratePTUFileV2(dailySalesOR)
+
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical, "Error Fetching")
+        End Try
     End Sub
 End Class

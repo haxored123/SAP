@@ -120,6 +120,24 @@ Module mod_extract
         oXL = Nothing
     End Sub
 
+    Friend Sub CodesInit()
+        If Not System.IO.File.Exists(frmMain2.configFile) Then
+            System.IO.File.Create(frmMain2.configFile).Dispose()
+        End If
+
+        With frmMain2.iniFile
+            .Load(frmMain2.configFile)
+
+            .AddSection("CODES").AddKey("CASHD").Value = "CTPF 90001"
+            .AddSection("CODES").AddKey("CARD1").Value = "CTPF 90050"
+            .AddSection("CODES").AddKey("CARD2").Value = "CTPF 90050"
+            .AddSection("CODES").AddKey("CARD3").Value = "CTPF 90050"
+            .AddSection("CODES").AddKey("CARD4").Value = "CTPF 90050"
+
+            .Save(frmMain2.configFile)
+        End With
+    End Sub
+
     Friend Sub GeneratePTUFileV2(ByVal dsSales As DataSet)
         Dim recordKey As Integer = 1
         'Excel
@@ -190,8 +208,8 @@ Module mod_extract
             oSheet.Activate()
 
             'Save
+            If SaveUrl.Substring(SaveUrl.Length - 1, 1) = "\" Then SaveUrl = SaveUrl.Substring(0, SaveUrl.Length - 1)
             oWB.SaveAs(SaveUrl & "\" & BranchCode & CDate(TransDate).ToString("MMddyyyy") & ".PTU")
-            MsgBox("DONE!", MsgBoxStyle.Information)
         Catch ex As Exception
             MsgBox(ex.Message.ToUpper, MsgBoxStyle.Critical, "Error Generating")
         End Try
@@ -206,8 +224,8 @@ Module mod_extract
     Private Sub GetCodes(ByVal dsSales As DataSet)
         On Error Resume Next
 
-        With frmMain.iniFile
-            .Load(frmMain.configFile)
+        With frmMain2.iniFile
+            .Load(frmMain2.configFile)
             ReDim AccntCodes(dsSales.Tables.Count - 1)
 
             For cnt As Integer = 0 To dsSales.Tables.Count - 1

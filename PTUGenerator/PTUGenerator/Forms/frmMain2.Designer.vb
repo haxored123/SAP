@@ -53,6 +53,7 @@ Partial Class frmMain2
         'mcSales
         '
         Me.mcSales.Location = New System.Drawing.Point(6, 7)
+        Me.mcSales.MaxSelectionCount = 1
         Me.mcSales.Name = "mcSales"
         Me.mcSales.TabIndex = 0
         '

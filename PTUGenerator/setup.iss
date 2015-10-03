@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Sales Extractor"
-#define MyAppVersion "1.0.0.4"
+#define MyAppVersion "2.0.0.0"
 #define MyAppPublisher "Perfecto Group of Companies"
 #define MyAppURL "http://pgc-itdept.org"
 #define MyAppExeName "PTUGenerator.exe"
@@ -22,7 +22,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\cdt-S0ft\Extractor
 DefaultGroupName=cdt-S0ft\Extractor
 OutputDir=D:\CaDeAtH\Documents\DevInstaller\PTU
-OutputBaseFilename=ptuXtr1004
+OutputBaseFilename=ptuXtr2
 Compression=lzma
 SolidCompression=yes
 
