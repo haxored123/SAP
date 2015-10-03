@@ -196,8 +196,8 @@ Module mod_excel
             End With
 
             accCol = New DataColumn("AccountNo", GetType(String))
-            debitCol = New DataColumn("Debit", GetType(Integer))
-            creditCol = New DataColumn("Credit", GetType(Integer))
+            debitCol = New DataColumn("Debit", GetType(Double))
+            creditCol = New DataColumn("Credit", GetType(Double))
 
             ds.Tables.Add(dt)
             ds.Tables(fillData).Columns.Add(accCol)
