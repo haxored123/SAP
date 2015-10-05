@@ -3,9 +3,9 @@
 Imports Microsoft.Office.Interop
 
 Module mod_extract
-    Public devMode As Boolean = False
+    Public devMode As Boolean = 0
 
-    Friend fileFormat As String = "fileformat.xlsx"
+    Friend fileFormat As String = "fileformat.xls"
     Friend CustomerCode As String = "CTPF 90001"
     Friend CreditCardCode As String = "CTPF 90050"
     Friend TransDate As String = "12/12/2014"
@@ -133,21 +133,98 @@ Module mod_extract
             .AddSection("CODES").AddKey("CARD2").Value = "CTPF 90050"
             .AddSection("CODES").AddKey("CARD3").Value = "CTPF 90050"
             .AddSection("CODES").AddKey("CARD4").Value = "CTPF 90050"
+            .AddSection("CODES").AddKey("CARD5").Value = "CTPF 90050"
 
             .Save(frmMain2.configFile)
         End With
     End Sub
 
+    Private Function CreatePTUFile(ByVal oXL As Excel.Application) As Excel.Workbook
+        'Excel
+        Dim oWB As Excel.Workbook
+        Dim oSheet As Excel.Worksheet
+        Dim misValue As Object = System.Reflection.Missing.Value
+
+        'Create WorkBook
+        oWB = oXL.Workbooks.Add(misValue)
+
+        'Sheet 1
+        oSheet = oWB.Workbooks(1)
+        oSheet.Activate()
+
+        Dim header() As String = {"RecordKey", "CardCode", "DocDate"}
+        For colIdx As Integer = 0 To 2
+            oSheet.Cells(1, colIdx + 1) = header(colIdx)
+        Next
+
+        'Sheet 2
+        oSheet = oWB.Worksheets(2)
+        oSheet.Activate()
+
+        header = {"RecordKey", "ItemCode", "ItemName", "Quantity", "Price", _
+                  "Discount", "WhsCode", "OcrCode", "OcrCode2", "OcrCode3", "OcrCode4", "OcrCode5", "TaxCode"}
+        For colIdx As Integer = 0 To header.Count - 1
+            oSheet.Cells(1, colIdx + 1) = header(colIdx)
+        Next
+
+        'Sheet 3
+        oSheet = oWB.Worksheets(3)
+        oSheet.Activate()
+
+        header = {"RecordKey", "ItemCode", "Quantity", "WhsCode", "IntrSerial"}
+        For colIdx As Integer = 0 To header.Count - 1
+            oSheet.Cells(1, colIdx + 1) = header(colIdx)
+        Next
+
+        Return oWB
+    End Function
+
     Friend Sub GeneratePTUFileV2(ByVal dsSales As DataSet)
         Dim recordKey As Integer = 1
         'Excel
         Dim oXL As New Excel.Application
+        If oXL Is Nothing Then
+            MessageBox.Show("Excel is not properly installed!!")
+            Return
+        End If
+
         Dim oWB As Excel.Workbook
         Dim oSheet As Excel.Worksheet
+        Dim misValue As Object = System.Reflection.Missing.Value
+
         Try
             dsSales.Tables.Remove("GetAll")
             GetCodes(dsSales)
-            oWB = oXL.Workbooks.Open(Application.StartupPath() & "\" & fileFormat)
+            'oWB = oXL.Workbooks.Open(Application.StartupPath() & "\" & fileFormat)
+
+            'Create WorkBook
+            oWB = oXL.Workbooks.Add(misValue)
+
+            'Sheet 1
+            oSheet = oWB.Sheets("Sheet1")
+
+            Dim header() As String = {"RecordKey", "CardCode", "DocDate"}
+            For colIdx As Integer = 0 To 2
+                oSheet.Cells(1, colIdx + 1) = header(colIdx)
+            Next
+
+            'Sheet 2
+            oSheet = oWB.Sheets("Sheet2")
+
+            header = {"RecordKey", "ItemCode", "ItemName", "Quantity", "Price", _
+                      "Discount", "WhsCode", "OcrCode", "OcrCode2", "OcrCode3", "OcrCode4", "OcrCode5", "TaxCode"}
+            For colIdx As Integer = 0 To header.Count - 1
+                oSheet.Cells(1, colIdx + 1) = header(colIdx)
+            Next
+
+            'Sheet 3
+            oSheet = oWB.Sheets("Sheet3")
+
+            header = {"RecordKey", "ItemCode", "Quantity", "WhsCode", "IntrSerial"}
+            For colIdx As Integer = 0 To header.Count - 1
+                oSheet.Cells(1, colIdx + 1) = header(colIdx)
+            Next
+            '==========================================================================================================================
 
             'Sheet 1
             oSheet = oWB.Worksheets(1)
@@ -164,6 +241,7 @@ Module mod_extract
             oSheet = oWB.Worksheets(2)
             Dim rowCnt As Integer = 0
             For tblCnt As Integer = 0 To dsSales.Tables.Count - 1
+                frmMain2.ProcessBarInit(0, dsSales.Tables(tblCnt).Rows.Count)
                 For rowIdx As Integer = 0 To dsSales.Tables(tblCnt).Rows.Count - 1
                     oSheet.Cells(rowCnt + 2, 1) = tblCnt + 1 'RecordKey
                     With dsSales.Tables(tblCnt).Rows(rowIdx)
@@ -181,8 +259,10 @@ Module mod_extract
                     End With
 
                     rowCnt += 1
+                    frmMain2.AddProcessBar()
                     Console.WriteLine("RowNo: " & rowCnt)
                 Next
+                Application.DoEvents()
             Next
 
             'Sheet 3 - Serial
@@ -209,7 +289,10 @@ Module mod_extract
 
             'Save
             If SaveUrl.Substring(SaveUrl.Length - 1, 1) = "\" Then SaveUrl = SaveUrl.Substring(0, SaveUrl.Length - 1)
-            oWB.SaveAs(SaveUrl & "\" & BranchCode & CDate(TransDate).ToString("MMddyyyy") & ".PTU")
+            oWB.SaveAs(SaveUrl & "\" & BranchCode & CDate(TransDate).ToString("MMddyyyy") & ".PTU", _
+                       Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue)
+            oWB.Close(True, misValue, misValue)
+
         Catch ex As Exception
             MsgBox(ex.Message.ToUpper, MsgBoxStyle.Critical, "Error Generating")
         End Try

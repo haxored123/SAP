@@ -8,8 +8,9 @@
     End Sub
 
     Private Sub btnGen_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnGen.Click
+        tmrAds.Enabled = True
         mod_extract.TransDate = mcSales.SelectionRange.Start
-        If devMode Then mod_extract.TransDate = "9/28/2015"
+        If devMode Then mod_extract.TransDate = "10/01/2015"
         Frozen(1)
 
         fetchingSales(mod_extract.TransDate)
@@ -21,6 +22,7 @@
     Private Sub Frozen(ByVal st As Boolean)
         btnGen.Enabled = Not st
         btnExit.Enabled = Not st
+        pbLoad.Visible = st
     End Sub
 
     Private Sub LoadConfig()
@@ -52,6 +54,8 @@
         wbAds.Navigate("http://adf.ly/7104086/banner/pgc-itdept.org/software/ptu-generator/")
 
         LoadConfig()
+
+        If devMode Then MsgBox("DEVELOPER MODE", MsgBoxStyle.Information)
     End Sub
 
     Private Sub btnExit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnExit.Click
@@ -68,6 +72,8 @@
 
             dailySalesOR = LoadSQL(mySql, "GetAll")
             Dim MaxRow As Integer = dailySalesOR.Tables("GetAll").Rows.Count
+
+            ProcessBarInit(0, MaxRow)
             For idx As Integer = 0 To MaxRow - 1
                 With dailySalesOR
                     Dim EntryID As String = .Tables("GetAll").Rows(idx).Item("ID")
@@ -89,7 +95,7 @@
                     End If
                 End With
                 Console.WriteLine("-------------------======================================TransNum: " & idx)
-
+                AddProcessBar()
                 Application.DoEvents()
             Next
 
@@ -104,5 +110,29 @@
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, "Error Fetching")
         End Try
+    End Sub
+
+    Friend Sub AddProcessBar()
+        On Error Resume Next
+        pbLoad.Value += 1
+    End Sub
+
+    Friend Sub ProcessBarInit(ByVal st As Integer, ByVal en As Integer)
+        pbLoad.Minimum = st
+        pbLoad.Maximum = en
+        Application.DoEvents()
+    End Sub
+
+    Private Sub wbAds_DocumentCompleted(ByVal sender As Object, ByVal e As System.Windows.Forms.WebBrowserDocumentCompletedEventArgs) Handles wbAds.DocumentCompleted
+        adShow = True
+    End Sub
+
+    Private Sub tmrAds_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles tmrAds.Tick
+        Static cnt As Integer
+        cnt += 1
+        If cnt >= 5 And adShow Then
+            tmrAds.Enabled = False
+            pbIT.Visible = False
+        End If
     End Sub
 End Class
