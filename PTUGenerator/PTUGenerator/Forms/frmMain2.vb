@@ -31,6 +31,7 @@
             mod_extract.BranchCode = IIf(IsError(.GetSection("Extractor").GetKey("Branch").Value), "", .GetSection("Extractor").GetKey("Branch").Value)
             mod_extract.AreaCode = IIf(IsError(.GetSection("Extractor").GetKey("Area").Value), "", .GetSection("Extractor").GetKey("Area").Value)
             mod_extract.Company = IIf(IsError(.GetSection("Extractor").GetKey("Company").Value), "", .GetSection("Extractor").GetKey("Company").Value)
+            mod_extract.SaveUrl = IIf(IsError(.GetSection("Extractor").GetKey("Path").Value), "", .GetSection("Extractor").GetKey("Path").Value)
             db_Firebird.dbName = IIf(IsError(.GetSection("Extractor").GetKey("DB").Value), "", .GetSection("Extractor").GetKey("DB").Value)
             If mod_extract.BranchCode = "" Or _
                 mod_extract.AreaCode = "" Or _
@@ -52,9 +53,7 @@
     Private Sub frmMain2_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.Text = My.Application.Info.Title & "|" & mod_extract.Company & " by IT Department 2015 | Version " & Me.GetType.Assembly.GetName.Version.ToString
         wbAds.Navigate("http://adf.ly/7104086/banner/pgc-itdept.org/software/ptu-generator/")
-
         LoadConfig()
-
         If devMode Then MsgBox("DEVELOPER MODE", MsgBoxStyle.Information)
     End Sub
 
@@ -81,9 +80,10 @@
                     mySql &= vbCrLf & "FROM POSITEM ITM INNER JOIN ITEMMASTER ITMM ON ITMM.ITEMNO = ITM.ITEMNO "
                     mySql &= vbCrLf & String.Format("WHERE ITM.POSENTRYID = '{0}'", EntryID)
 
+                    'Win7 and XP sort display is different
                     Dim tmpSales As DataSet = LoadSQL(mySql)
                     Dim tmpMaxCount As Integer = tmpSales.Tables(0).Rows.Count
-                    Dim tblName As String = tmpSales.Tables(0).Rows(tmpMaxCount - 1).Item("ItemCode")
+                    Dim tblName As String = tmpSales.Tables(0).Select("LINENO = " & tmpMaxCount)(0).Item("ItemCode")
 
                     mySql &= vbCrLf & " AND ITM.QTY > 0"
                     tmpSales = LoadSQL(mySql, tblName)

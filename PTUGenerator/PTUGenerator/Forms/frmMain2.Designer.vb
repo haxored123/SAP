@@ -35,9 +35,9 @@ Partial Class frmMain2
         Me.txtArea = New System.Windows.Forms.TextBox()
         Me.txtCompany = New System.Windows.Forms.TextBox()
         Me.lblSite = New System.Windows.Forms.Label()
-        Me.wbAds = New System.Windows.Forms.WebBrowser()
         Me.pbLoad = New System.Windows.Forms.ProgressBar()
         Me.tmrAds = New System.Windows.Forms.Timer(Me.components)
+        Me.wbAds = New System.Windows.Forms.WebBrowser()
         CType(Me.pbIT, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -46,9 +46,9 @@ Partial Class frmMain2
         Me.pbIT.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pbIT.Image = Global.PTUGenerator.My.Resources.Resources.itd_728x90
-        Me.pbIT.Location = New System.Drawing.Point(2, 176)
+        Me.pbIT.Location = New System.Drawing.Point(1, 176)
         Me.pbIT.Name = "pbIT"
-        Me.pbIT.Size = New System.Drawing.Size(734, 95)
+        Me.pbIT.Size = New System.Drawing.Size(734, 97)
         Me.pbIT.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.pbIT.TabIndex = 0
         Me.pbIT.TabStop = False
@@ -153,20 +153,14 @@ Partial Class frmMain2
         Me.lblSite.TabIndex = 12
         Me.lblSite.Text = "http://pgc-itdept.org"
         '
-        'wbAds
-        '
-        Me.wbAds.Location = New System.Drawing.Point(2, 176)
-        Me.wbAds.MinimumSize = New System.Drawing.Size(20, 20)
-        Me.wbAds.Name = "wbAds"
-        Me.wbAds.Size = New System.Drawing.Size(734, 95)
-        Me.wbAds.TabIndex = 13
-        '
         'pbLoad
         '
+        Me.pbLoad.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pbLoad.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer))
-        Me.pbLoad.Location = New System.Drawing.Point(57, 242)
+        Me.pbLoad.Location = New System.Drawing.Point(57, 235)
         Me.pbLoad.Name = "pbLoad"
-        Me.pbLoad.Size = New System.Drawing.Size(621, 17)
+        Me.pbLoad.Size = New System.Drawing.Size(592, 17)
         Me.pbLoad.TabIndex = 14
         Me.pbLoad.Visible = False
         '
@@ -174,13 +168,23 @@ Partial Class frmMain2
         '
         Me.tmrAds.Interval = 1000
         '
+        'wbAds
+        '
+        Me.wbAds.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.wbAds.Location = New System.Drawing.Point(2, 176)
+        Me.wbAds.MinimumSize = New System.Drawing.Size(20, 20)
+        Me.wbAds.Name = "wbAds"
+        Me.wbAds.Size = New System.Drawing.Size(733, 97)
+        Me.wbAds.TabIndex = 13
+        '
         'frmMain2
         '
         Me.AcceptButton = Me.btnGen
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.btnExit
-        Me.ClientSize = New System.Drawing.Size(735, 271)
+        Me.ClientSize = New System.Drawing.Size(735, 272)
         Me.Controls.Add(Me.pbLoad)
         Me.Controls.Add(Me.lblSite)
         Me.Controls.Add(Me.txtCompany)
@@ -216,7 +220,7 @@ Partial Class frmMain2
     Friend WithEvents txtArea As System.Windows.Forms.TextBox
     Friend WithEvents txtCompany As System.Windows.Forms.TextBox
     Friend WithEvents lblSite As System.Windows.Forms.Label
-    Friend WithEvents wbAds As System.Windows.Forms.WebBrowser
     Friend WithEvents pbLoad As System.Windows.Forms.ProgressBar
     Friend WithEvents tmrAds As System.Windows.Forms.Timer
+    Friend WithEvents wbAds As System.Windows.Forms.WebBrowser
 End Class
