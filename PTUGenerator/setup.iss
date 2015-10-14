@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Sales Extractor"
-#define MyAppVersion "2.0.0.2"
+#define MyAppVersion "2.0.0.3"
 #define MyAppPublisher "Perfecto Group of Companies"
 #define MyAppURL "http://pgc-itdept.org"
 #define MyAppExeName "PTUGenerator.exe"
@@ -21,8 +21,8 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\cdt-S0ft\Extractor
 DefaultGroupName=cdt-S0ft\Extractor
-OutputDir=D:\CaDeAtH\Documents\DevInstaller\PTU
-OutputBaseFilename=ptuXtr2002
+OutputDir=D:\cadeath\Documents\DevInstaller\PTU
+OutputBaseFilename=ptuXtr2003
 Compression=lzma
 SolidCompression=yes
 
@@ -33,8 +33,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\CaDeAtH\Documents\GitHub\SAP\PTUGenerator\PTUGenerator\bin\Release\PTUGenerator.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\CaDeAtH\Documents\GitHub\SAP\PTUGenerator\PTUGenerator\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\cadeath\Documents\GitHub\SAP\PTUGenerator\PTUGenerator\bin\Release\PTUGenerator.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\cadeath\Documents\GitHub\SAP\PTUGenerator\PTUGenerator\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

@@ -242,9 +242,10 @@ Module mod_extract
             Dim rowCnt As Integer = 0
             For tblCnt As Integer = 0 To dsSales.Tables.Count - 1
                 frmMain2.ProcessBarInit(0, dsSales.Tables(tblCnt).Rows.Count)
-                For rowIdx As Integer = 0 To dsSales.Tables(tblCnt).Rows.Count - 1
-                    oSheet.Cells(rowCnt + 2, 1) = tblCnt + 1 'RecordKey
-                    With dsSales.Tables(tblCnt).Rows(rowIdx)
+                Dim tmpRow() As DataRow = dsSales.Tables(tblCnt).Select("", "ItemCode ASC")
+                For Each dsRow As DataRow In tmpRow
+                    oSheet.Cells(rowCnt + 2, 1) = tblCnt + 1
+                    With dsRow
                         Dim prc As Double = .Item("Price") / 1.12
                         oSheet.Cells(rowCnt + 2, 2) = .Item("ItemCode")
                         oSheet.Cells(rowCnt + 2, 3) = .Item("ItemName")
@@ -257,11 +258,29 @@ Module mod_extract
                         oSheet.Cells(rowCnt + 2, 10) = "OPE"
                         oSheet.Cells(rowCnt + 2, 13) = "OVAT-N"
                     End With
-
                     rowCnt += 1
                     frmMain2.AddProcessBar()
-                    Console.WriteLine("RowNo: " & rowCnt)
                 Next
+                'For rowIdx As Integer = 0 To dsSales.Tables(tblCnt).Rows.Count - 1
+                '    oSheet.Cells(rowCnt + 2, 1) = tblCnt + 1 'RecordKey
+                '    With dsSales.Tables(tblCnt).Rows(rowIdx)
+                '        Dim prc As Double = .Item("Price") / 1.12
+                '        oSheet.Cells(rowCnt + 2, 2) = .Item("ItemCode")
+                '        oSheet.Cells(rowCnt + 2, 3) = .Item("ItemName")
+                '        oSheet.Cells(rowCnt + 2, 4) = .Item("Quantity")
+                '        oSheet.Cells(rowCnt + 2, 5) = prc 'Fetch from DB or recompute
+                '        oSheet.Cells(rowCnt + 2, 6) = 0 '.Item("Discount") 'Change Discount into 0. to be verified where should it came from.
+                '        oSheet.Cells(rowCnt + 2, 7) = BranchCode
+                '        oSheet.Cells(rowCnt + 2, 8) = IIf(Company = "Perfecom", BranchCode, AreaCode)
+                '        oSheet.Cells(rowCnt + 2, 9) = IIf(Company = "Perfecom", AreaCode, BranchCode)
+                '        oSheet.Cells(rowCnt + 2, 10) = "OPE"
+                '        oSheet.Cells(rowCnt + 2, 13) = "OVAT-N"
+                '    End With
+
+                '    rowCnt += 1
+                '    frmMain2.AddProcessBar()
+                '    Console.WriteLine("RowNo: " & rowCnt)
+                'Next
                 Application.DoEvents()
             Next
 
